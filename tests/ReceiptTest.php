@@ -37,4 +37,15 @@ class ReceiptTest extends TestCase
 
         $this->assertEquals(15, $output, 'When summing the total should equal 15');
     }
+
+    public function testTax() {
+        $inputAmount = 10.00;
+        $inputTax = 0.10;
+        $outputAnswer = $this->receipt->tax($inputAmount, $inputTax);
+        $this->assertEquals(
+            1.00,
+            $outputAnswer,
+            'Tax shoulf be equal 1'
+        );
+    }
 }
