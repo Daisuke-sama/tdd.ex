@@ -13,6 +13,11 @@
   "require-dev": {
     "phpunit/phpunit": "*"
   },
+  "autoload": {
+    "psr-4": {
+      "TDD\\": "src/"
+    }
+  },
   "autoload-dev": {
     "psr-4": {
       "TDD\\Test\\": "tests/"
