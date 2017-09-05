@@ -17,12 +17,24 @@ use TDD\Receipt;
 
 class ReceiptTest extends TestCase
 {
+    private $receipt;
+
+    public function setUp()
+    {
+        $this->receipt = new Receipt();
+    }
+
+    public function tearDown()
+    {
+        unset($this->receipt);
+    }
+
     public function testTotal()
     {
-        $receipt = new Receipt();
-        $this->assertEquals(
-            15,
-            $receipt->total([0,2,5,8]),
-            'When summing the total should equal 15');
+        $input = [0,2,5,8];
+
+        $output = $this->receipt->total($input);
+
+        $this->assertEquals(15, $output, 'When summing the total should equal 15');
     }
 }
