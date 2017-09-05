@@ -1,0 +1,21 @@
+{
+  "name": "daisuke_sama/tdd.ex",
+  "description": "Just a testing.",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Daisuke-sama",
+      "email": "otaku.daisuke@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TDD\\Test\\": "tests/"
+    }
+  }
+}
