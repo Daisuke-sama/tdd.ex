@@ -17,6 +17,10 @@ use TDD\Receipt;
 
 class ReceiptTest extends TestCase
 {
+
+    /**
+     * @var Receipt
+     */
     private $receipt;
 
     public function setUp()
@@ -32,10 +36,24 @@ class ReceiptTest extends TestCase
     public function testTotal()
     {
         $input = [0,2,5,8];
+        $coupon = null;    // dummy object
 
-        $output = $this->receipt->total($input);
+        $output = $this->receipt->total($input, null);
 
         $this->assertEquals(15, $output, 'When summing the total should equal 15');
+    }
+
+    /**
+     * Within the function is a "dummy" object placed. It is a coupon that exist, but doesn't affect.
+     */
+    public function testTotalAndCoupon()
+    {
+        $input = [0,2,5,8];
+        $coupon = 0.20;     // dummy object
+
+        $output = $this->receipt->total($input, $coupon);
+
+        $this->assertEquals(12, $output, 'When summing the total should equal 12');
     }
 
     public function testTax() {
