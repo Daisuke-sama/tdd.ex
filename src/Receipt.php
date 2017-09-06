@@ -10,7 +10,7 @@ namespace TDD;
 
 class Receipt
 {
-    public function total(array $items = [], $coupon)
+    public function total(array $items = [], ?float $coupon)
     {
         $sum = array_sum($items);
 
@@ -21,8 +21,15 @@ class Receipt
         return $sum;
     }
 
-    public function tax($amount, $tax)
+    public function tax(float $amount, float $tax)
     {
         return $amount * $tax;
+    }
+
+    public function postTaxTotal(array $items, float $tax, ?float $coupon) {
+        $subtotal = $this->total($items, $coupon);
+        $result = $subtotal + $this->tax($subtotal, $tax);
+
+        return $result;
     }
 }
