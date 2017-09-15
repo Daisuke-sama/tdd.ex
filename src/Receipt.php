@@ -42,4 +42,9 @@ class Receipt
 
         return $result;
     }
+
+    public function currencyAmount($input)
+    {
+        return round($input, 2);
+    }
 }

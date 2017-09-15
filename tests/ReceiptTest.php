@@ -52,7 +52,8 @@ class ReceiptTest extends TestCase
     public function provideTotal()
     {
         return [
-            'waited_ok' => [[1, 2, 5, 8], 16], // can be tested with command "vendor\bin\phpunit tests --filter=testTotal@waited_ok"
+            'waited_ok' => [[1, 2, 5, 8], 16],
+            // can be tested with command "vendor\bin\phpunit tests --filter=testTotal@waited_ok"
             [[-1, 2, 5, 8], 14],
             [[1, 2, 8], 11],
         ];
@@ -128,8 +129,8 @@ class ReceiptTest extends TestCase
      */
     public function testPostTaxTotalMock()
     {
-        $items = [1, 2, 5, 8];
-        $tax = 0.20;
+        $items  = [1, 2, 5, 8];
+        $tax    = 0.20;
         $coupon = null;
         // creating a stub
         // In other words, the two methods can absence in the testing class,
@@ -139,7 +140,7 @@ class ReceiptTest extends TestCase
             ->getMock();
         $receipt->expects($this->once())
             ->method('total')
-            ->with($items, $coupon)             // here we have transformed a stub to a mock
+            ->with($items, $coupon)// here we have transformed a stub to a mock
             ->will($this->returnValue(10.00));
         $receipt->expects($this->once())
             ->method('tax')
@@ -155,5 +156,27 @@ class ReceiptTest extends TestCase
         $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
 
         $this->assertEquals(11.00, $result);
+    }
+
+    /**
+     * @dataProvider provideCurrencyAmount
+     */
+    public function testCurrencyAmount($input, $expected, $message)
+    {
+        $this->assertSame(
+            $expected,
+            $this->receipt->currencyAmount($input),
+            $message
+        );
+    }
+
+    public function provideCurrencyAmount()
+    {
+        return [
+            [1, 1.00, '1 should be transformed to 1.00'],
+            [1.1, 1.10, '1.1 should be transformed to 1.10'],
+            [1.11, 1.11, '1.11 should be transformed to 1.11'],
+            [1.111, 1.11, '1.111 should be transformed to 1.11'],
+        ];
     }
 }
