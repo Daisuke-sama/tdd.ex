@@ -97,4 +97,40 @@ class ReceiptTest extends TestCase
 
         $this->assertEquals(11.00, $result);
     }
+
+    /**
+     * Here is a mock creation, which means controlling inputs for functions,
+     * or a mock has expectations about the stub method are called in the
+     * inputs to that stub.
+     */
+    public function testPostTaxTotalMock()
+    {
+        $items = [1, 2, 5, 8];
+        $tax = 0.20;
+        $coupon = null;
+        // creating a stub
+        // In other words, the two methods can absence in the testing class,
+        // and anyway test will pass.
+        $receipt = $this->getMockBuilder('TDD\\Receipt')
+            ->setMethods(['tax', 'total'])
+            ->getMock();
+        $receipt->expects($this->once())
+            ->method('total')
+            ->with($items, $coupon)             // here we have transformed a stub to a mock
+            ->will($this->returnValue(10.00));
+        $receipt->expects($this->once())
+            ->method('tax')
+            // since we have stubbed return value of the total() that used by tax(),
+            // then mock signature for tax() should have that return value.
+            // In other words, there is a new implicit assertion, which success
+            // will be shown in the test result.
+            ->with(10.00, $tax)
+            ->will($this->returnValue(1.00));
+
+        // If the methods are used inside that tested function then its results
+        // will be replaced on created by mock above, i.e. 10.00 and 1.00.
+        $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
+
+        $this->assertEquals(11.00, $result);
+    }
 }
