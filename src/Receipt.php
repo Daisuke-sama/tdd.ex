@@ -8,10 +8,19 @@
 
 namespace TDD;
 
+use \BadMethodCallException;
+
 class Receipt
 {
+
     public function total(array $items = [], ?float $coupon)
     {
+        if ($coupon > 1.00) {
+            throw new BadMethodCallException(
+                'Coupon must less then or equal to 1.00'
+            );
+        }
+
         $sum = array_sum($items);
 
         if ($coupon !== null && is_float($coupon)) {
@@ -26,9 +35,10 @@ class Receipt
         return $amount * $tax;
     }
 
-    public function postTaxTotal(array $items, float $tax, ?float $coupon) {
+    public function postTaxTotal(array $items, float $tax, ?float $coupon)
+    {
         $subtotal = $this->total($items, $coupon);
-        $result = $subtotal + $this->tax($subtotal, $tax);
+        $result   = $subtotal + $this->tax($subtotal, $tax);
 
         return $result;
     }

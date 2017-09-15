@@ -61,6 +61,15 @@ class ReceiptTest extends TestCase
         );
     }
 
+    public function testTotalException()
+    {
+        $input  = [0, 2, 5, 8];
+        $coupon = 1.20;
+
+        $this->expectException('BadMethodCallException');
+        $this->receipt->total($input, $coupon);
+    }
+
     public function testTax()
     {
         $inputAmount  = 10.00;
@@ -75,8 +84,9 @@ class ReceiptTest extends TestCase
 
     /**
      * Here is a stub creation for replacing of methods in the class, thereby
-     * excluding needed their real existing in the class, because we have written
-     * returns that we want to receive for our testing method passed its test.
+     * excluding needed their real existing in the class, because we have
+     * written returns that we want to receive for our testing method passed
+     * its test.
      */
     public function testPostTaxTotal()
     {
