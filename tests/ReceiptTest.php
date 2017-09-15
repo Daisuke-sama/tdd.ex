@@ -52,7 +52,7 @@ class ReceiptTest extends TestCase
     public function provideTotal()
     {
         return [
-            [[1, 2, 5, 8], 16],
+            'waited_ok' => [[1, 2, 5, 8], 16], // can be tested with command "vendor\bin\phpunit tests --filter=testTotal@waited_ok"
             [[-1, 2, 5, 8], 14],
             [[1, 2, 8], 11],
         ];
