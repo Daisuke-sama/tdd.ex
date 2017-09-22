@@ -9,9 +9,19 @@
 namespace TDD;
 
 use \BadMethodCallException;
+use TDD\Formatter;
 
 class Receipt
 {
+    /**
+     * @var Formatter
+     */
+    private $formatter;
+
+    public function __construct($formatter)
+    {
+        $this->formatter = $formatter;
+    }
 
     public function total(array $items = [], ?float $coupon)
     {
@@ -32,7 +42,7 @@ class Receipt
 
     public function tax(float $amount, float $tax)
     {
-        return $amount * $tax;
+        return $amount * $this->formatter->currencyAmount($tax);
     }
 
     public function postTaxTotal(array $items, float $tax, ?float $coupon)
@@ -41,10 +51,5 @@ class Receipt
         $result   = $subtotal + $this->tax($subtotal, $tax);
 
         return $result;
-    }
-
-    public function currencyAmount($input)
-    {
-        return round($input, 2);
     }
 }

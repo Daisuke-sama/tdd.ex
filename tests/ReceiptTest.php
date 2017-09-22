@@ -13,19 +13,30 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor'
 
 use PHPUnit\Framework\TestCase;
 use TDD\Receipt;
-
+use TDD\Formatter;
 
 class ReceiptTest extends TestCase
 {
-
     /**
      * @var Receipt
      */
     private $receipt;
 
+    /**
+     * @var Formatter
+     */
+    private $formatter;
+
     public function setUp()
     {
-        $this->receipt = new Receipt();
+        $this->formatter = $this->getMockBuilder('TDD\Formatter')
+            ->setMethods(['currencyAmount'])
+            ->getMock();
+        $this->formatter->expects($this->any())
+            ->method('currencyAmount')
+            ->with($this->anything())
+            ->will($this->returnArgument(0));
+        $this->receipt = new Receipt($this->formatter);
     }
 
     public function tearDown()
@@ -108,6 +119,7 @@ class ReceiptTest extends TestCase
         // In other words, the two methods can absence in the testing class,
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
+            ->setConstructorArgs([$this->formatter])
             ->setMethods(['tax', 'total'])
             ->getMock();
         $receipt->method('total')
@@ -137,6 +149,7 @@ class ReceiptTest extends TestCase
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
             ->setMethods(['tax', 'total'])
+            ->setConstructorArgs([$this->formatter])
             ->getMock();
         $receipt->expects($this->once())
             ->method('total')
@@ -156,27 +169,5 @@ class ReceiptTest extends TestCase
         $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
 
         $this->assertEquals(11.00, $result);
-    }
-
-    /**
-     * @dataProvider provideCurrencyAmount
-     */
-    public function testCurrencyAmount($input, $expected, $message)
-    {
-        $this->assertSame(
-            $expected,
-            $this->receipt->currencyAmount($input),
-            $message
-        );
-    }
-
-    public function provideCurrencyAmount()
-    {
-        return [
-            [1, 1.00, '1 should be transformed to 1.00'],
-            [1.1, 1.10, '1.1 should be transformed to 1.10'],
-            [1.11, 1.11, '1.11 should be transformed to 1.11'],
-            [1.111, 1.11, '1.111 should be transformed to 1.11'],
-        ];
     }
 }
