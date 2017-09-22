@@ -87,8 +87,8 @@ class ReceiptTest extends TestCase
     public function testTax()
     {
         $inputAmount  = 10.00;
-        $inputTax     = 0.10;
-        $outputAnswer = $this->receipt->tax($inputAmount, $inputTax);
+        $this->receipt->tax     = 0.10;
+        $outputAnswer = $this->receipt->tax($inputAmount);
         $this->assertEquals(
             1.00,
             $outputAnswer,
@@ -130,7 +130,7 @@ class ReceiptTest extends TestCase
     public function testPostTaxSubtotalMock()
     {
         $items  = [1, 2, 5, 8];
-        $tax    = 0.20;
+        $this->receipt->tax    = 0.20;
         $coupon = null;
         // creating a stub
         // In other words, the two methods can absence in the testing class,
@@ -144,16 +144,16 @@ class ReceiptTest extends TestCase
             ->will($this->returnValue(10.00));
         $receipt->expects($this->once())
             ->method('tax')
-            // since we have stubbed return value of the total() that used by tax(),
+            // since we have stubbed return value of the subtotal() that used by tax(),
             // then mock signature for tax() should have that return value.
             // In other words, there is a new implicit assertion, which success
             // will be shown in the test result.
-            ->with(10.00, $tax)
+            ->with(10.00)
             ->will($this->returnValue(1.00));
 
         // If the methods are used inside that tested function then its results
         // will be replaced on created by mock above, i.e. 10.00 and 1.00.
-        $result = $receipt->postTaxSubtotal([1, 2, 5, 8], 0.20, null);
+        $result = $receipt->postTaxSubtotal([1, 2, 5, 8], null);
 
         $this->assertEquals(11.00, $result);
     }
