@@ -120,7 +120,7 @@ class ReceiptTest extends TestCase
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
             ->setConstructorArgs([$this->formatter])
-            ->setMethods(['tax', 'total'])
+            ->setMethods(['tax', 'subtotal'])
             ->getMock();
         $receipt->method('subtotal')
             ->will($this->returnValue(10.00));
@@ -148,7 +148,7 @@ class ReceiptTest extends TestCase
         // In other words, the two methods can absence in the testing class,
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
-            ->setMethods(['tax', 'total'])
+            ->setMethods(['tax', 'subtotal'])
             ->setConstructorArgs([$this->formatter])
             ->getMock();
         $receipt->expects($this->once())
