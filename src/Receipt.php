@@ -6,12 +6,15 @@
  * Time: 5:15 PM
  */
 
+declare(strict_types=1);
+
 namespace TDD;
 
 use \BadMethodCallException;
 
 class Receipt
 {
+
     /**
      * @var float
      */
