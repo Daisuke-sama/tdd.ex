@@ -34,13 +34,13 @@ class ReceiptTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTotal
+     * @dataProvider provideSubtotal
      */
-    public function testTotal($items, $expected)
+    public function testSubtotal($items, $expected)
     {
         $coupon = null;    // dummy object
 
-        $output = $this->receipt->total($items, $coupon);
+        $output = $this->receipt->subtotal($items, $coupon);
 
         $this->assertEquals(
             $expected,
@@ -49,7 +49,7 @@ class ReceiptTest extends TestCase
         );
     }
 
-    public function provideTotal()
+    public function provideSubtotal()
     {
         return [
             'waited_ok' => [[1, 2, 5, 8], 16],
@@ -63,32 +63,32 @@ class ReceiptTest extends TestCase
      * Within the function is a "dummy" object placed. It is a coupon that
      * exist, but doesn't affect.
      */
-    public function testTotalAndCoupon()
+    public function testSubtotalAndCoupon()
     {
         $input  = [0, 2, 5, 8];
-        $coupon = 0.20;     // dummy object
+        $coupon = 0.20;                         // dummy object
 
-        $output = $this->receipt->total($input, $coupon);
+        $output = $this->receipt->subtotal($input, $coupon);
 
         $this->assertEquals(
             12, $output, 'When summing the total should equal 12'
         );
     }
 
-    public function testTotalException()
+    public function testSubtotalException()
     {
         $input  = [0, 2, 5, 8];
         $coupon = 1.20;
 
         $this->expectException('BadMethodCallException');
-        $this->receipt->total($input, $coupon);
+        $this->receipt->subtotal($input, $coupon);
     }
 
     public function testTax()
     {
         $inputAmount  = 10.00;
-        $inputTax     = 0.10;
-        $outputAnswer = $this->receipt->tax($inputAmount, $inputTax);
+        $this->receipt->tax     = 0.10;
+        $outputAnswer = $this->receipt->tax($inputAmount);
         $this->assertEquals(
             1.00,
             $outputAnswer,
@@ -102,22 +102,22 @@ class ReceiptTest extends TestCase
      * written returns that we want to receive for our testing method passed
      * its test.
      */
-    public function testPostTaxTotal()
+    public function testPostTaxSubtotal()
     {
         // creating a stub
         // In other words, the two methods can absence in the testing class,
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
-            ->setMethods(['tax', 'total'])
+            ->setMethods(['tax', 'subtotal'])
             ->getMock();
-        $receipt->method('total')
+        $receipt->method('subtotal')
             ->will($this->returnValue(10.00));
         $receipt->method('tax')
             ->will($this->returnValue(1.00));
 
         // If the methods are used inside that tested function then its results
         // will be replaced on created by mock above, i.e. 10.00 and 1.00.
-        $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
+        $result = $receipt->postTaxSubtotal([1, 2, 5, 8], 0.20, null);
 
         $this->assertEquals(11.00, $result);
     }
@@ -127,33 +127,33 @@ class ReceiptTest extends TestCase
      * or a mock has expectations about the stub method are called in the
      * inputs to that stub.
      */
-    public function testPostTaxTotalMock()
+    public function testPostTaxSubtotalMock()
     {
         $items  = [1, 2, 5, 8];
-        $tax    = 0.20;
+        $this->receipt->tax    = 0.20;
         $coupon = null;
         // creating a stub
         // In other words, the two methods can absence in the testing class,
         // and anyway test will pass.
         $receipt = $this->getMockBuilder('TDD\\Receipt')
-            ->setMethods(['tax', 'total'])
+            ->setMethods(['tax', 'subtotal'])
             ->getMock();
         $receipt->expects($this->once())
-            ->method('total')
+            ->method('subtotal')
             ->with($items, $coupon)// here we have transformed a stub to a mock
             ->will($this->returnValue(10.00));
         $receipt->expects($this->once())
             ->method('tax')
-            // since we have stubbed return value of the total() that used by tax(),
+            // since we have stubbed return value of the subtotal() that used by tax(),
             // then mock signature for tax() should have that return value.
             // In other words, there is a new implicit assertion, which success
             // will be shown in the test result.
-            ->with(10.00, $tax)
+            ->with(10.00)
             ->will($this->returnValue(1.00));
 
         // If the methods are used inside that tested function then its results
         // will be replaced on created by mock above, i.e. 10.00 and 1.00.
-        $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
+        $result = $receipt->postTaxSubtotal([1, 2, 5, 8], null);
 
         $this->assertEquals(11.00, $result);
     }
